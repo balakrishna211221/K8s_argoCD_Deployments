@@ -1,21 +1,21 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: node_app
+  name: node-app
   labels:
-    app: node_app
+    app: node-app
 spec:
   replicas: 1 # Adjust the number of replicas as needed
   selector:
     matchLabels:
-      app: node_app 
+      app: node-app 
   template:
     metadata:
       labels:
-        app: node_app
+        app: node-app
     spec:
       containers:
-        - name: node_app
+        - name: node-app
           image: baluaddagatla/container_app_sample:latest # Replace with your Docker image
           ports:
             - containerPort: 3000 # Adjust the port as needed
