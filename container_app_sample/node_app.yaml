@@ -18,10 +18,10 @@ spec:
           image: baluaddagatla/container_app_sample:latest
           ports:
             - containerPort: 3000
-          volumeMounts:
-            - name: shared-session
-              mountPath: /app/sessions  # Adjust to where your app stores session data
-      volumes:
-        - name: my-pvc
-          persistentVolumeClaim:
-            claimName: hostpath
+      #     volumeMounts:
+      #       - name: shared-session
+      #         mountPath: /app/sessions  # Adjust to where your app stores session data
+      # volumes:
+      #   - name: my-pvc
+      #     persistentVolumeClaim:
+      #       claimName: hostpath
