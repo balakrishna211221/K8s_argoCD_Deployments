@@ -22,6 +22,6 @@ spec:
             - name: shared-session
               mountPath: /app/sessions  # Adjust to where your app stores session data
       volumes:
-        - name: shared-session
+        - name: my-pvc
           persistentVolumeClaim:
             claimName: hostpath
