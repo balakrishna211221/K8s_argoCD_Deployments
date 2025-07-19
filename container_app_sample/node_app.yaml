@@ -22,3 +22,8 @@ spec:
           env:
             - name: NODE_ENV
               value: "production" # Set environment variables as needed
+      volume:
+        - name: node-app-storage
+          persistentVolumeClaim:
+            claimName: my-pvc # Ensure this PVC is created in advance
+      
