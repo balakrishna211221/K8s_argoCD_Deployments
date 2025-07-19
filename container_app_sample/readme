@@ -1,0 +1,154 @@
+in this commit 
+we are using node web application for sample to test and understand, whether statefull application can be run in deployment or must use in statefull workload in k8s
+
+after deployment expected outcome would be
+ -> application run in deployment but consider if we have two pods and user reach to pod1 and again next request user reach to pod 2 then 
+
+ If you use a Kubernetes Deployment with multiple replicas (pods), and you use in-memory sessions (like now), you’ll face issues:
+
+User logs in to Pod A
+
+Their next request hits Pod B
+
+Pod B doesn’t know about the session — the user is logged out
+
+This breaks session continuity.
+
+
+Solutions for Kubernetes:
+Here are your options for making your app truly stateful in Kubernetes:
+
+Option 1: Use an external session store (Recommended)
+Use express-session with a shared backend like:
+
+✅ Redis (common and fast)
+
+🟢 MongoDB, PostgreSQL (less common, heavier)
+
+🔧 Example with Redis:
+Install:
+
+bash
+Copy
+Edit
+npm install connect-redis redis
+In your server.js:
+
+js
+Copy
+Edit
+const session = require('express-session');
+const RedisStore = require('connect-redis')(session);
+const { createClient } = require('redis');
+
+const redisClient = createClient({ legacyMode: true, url: 'redis://redis-service:6379' });
+redisClient.connect().catch(console.error);
+
+app.use(session({
+  store: new RedisStore({ client: redisClient }),
+  secret: 'mysecret',
+  resave: false,
+  saveUninitialized: false
+}));
+Then, in Kubernetes, run a Redis instance and expose it as a redis-service.
+
+Option 2: Use a StatefulSet with persistent storage (Not ideal here)
+You could try using a StatefulSet and attach persistent storage, but:
+
+You’d still lose sessions on pod restart unless you serialize them
+
+This is not scalable or efficient for web sessions
+
+So: not recommended for session handling
+
+Option 3: Sticky sessions using Ingress (Hacky, not scalable)
+You could configure your Kubernetes Ingress (like NGINX) to send all requests from the same client to the same pod using sticky sessions (affinity), but:
+
+Doesn’t solve pod crash/restart
+
+Doesn’t work across scaling or rollouts
+
+Considered a temporary workaround, not production-safe
+
+🧱 Recommended Kubernetes Setup
+1. Redis Deployment
+
+yaml
+Copy
+Edit
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: redis
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: redis
+  template:
+    metadata:
+      labels:
+        app: redis
+    spec:
+      containers:
+      - name: redis
+        image: redis
+        ports:
+        - containerPort: 6379
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: redis-service
+spec:
+  selector:
+    app: redis
+  ports:
+  - port: 6379
+    targetPort: 6379
+2. Your App Deployment
+
+yaml
+Copy
+Edit
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: stateful-web-app
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: web
+  template:
+    metadata:
+      labels:
+        app: web
+    spec:
+      containers:
+      - name: web
+        image: your-image:tag
+        ports:
+        - containerPort: 3000
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: web-service
+spec:
+  selector:
+    app: web
+  ports:
+  - port: 80
+    targetPort: 3000
+  type: LoadBalancer
+✅ Final Recommendation
+If your app uses sessions (like express-session), you must use an external session store like Redis to work reliably in Kubernetes with scaling, restarts, and multiple pods.
+
+Let me know if you'd like:
+
+Helm chart for this setup
+
+Full YAML with Redis and your app
+
+Persistent storage for Redis
