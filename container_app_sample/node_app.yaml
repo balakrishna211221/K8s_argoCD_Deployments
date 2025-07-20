@@ -1,5 +1,5 @@
 apiVersion: apps/v1
-kind: StatefulSet
+kind: Deployment
 metadata:
   name: node-app
   labels:
@@ -9,6 +9,8 @@ spec:
   selector:
     matchLabels:
       app: node-app 
+  strategy:
+    type: RollingUpdate
   template:
     metadata:
       labels:
@@ -24,4 +26,34 @@ spec:
               valueFrom:
                 configMapKeyRef:
                   name: env-config
-                  key: NODE_ENV      
+                  key: NODE_ENV
+            - name: REDIS_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: env-config
+                  key: REDIS_HOST
+            - name: REDIS_PORT
+              valueFrom:  
+                configMapKeyRef:
+                  name: env-config
+                  key: REDIS_PORT
+      readinessProbe:
+        httpGet:
+          path: /ready
+          port: 3000 # Adjust the port as needed 
+        initialDelaySeconds: 10
+        periodSeconds: 5
+      livenessProbe:
+        httpGet:
+          path: /health
+          port: 3000 # Adjust the port as needed  
+        initialDelaySeconds: 15
+        periodSeconds: 10 
+      startupProbe:
+        httpGet:
+          path: /health
+          port: 3000 # Adjust the port as needed
+        initialDelaySeconds: 20
+        periodSeconds: 10
+
+              

@@ -4,5 +4,7 @@ metadata:
   name: env-config
 data:
   NODE_ENV: "Staging"
+  REDIS_HOST: "redis"
+  REDIS_PORT: "6379"
 
   # Add more environment variables as needed 
