@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: node-app
-          image: baluaddagatla/container_app_sample:1.0.24
+          image: baluaddagatla/container_app_sample:1.0.26
           ports:
             - containerPort: 3000 # Adjust the port as needed
           env:
