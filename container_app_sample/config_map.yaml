@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: env-config
+data:
+  NODE_ENV: "Staging"
+
+  # Add more environment variables as needed 
