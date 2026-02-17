@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: jmeter
+  labels:
+    app: jmeter
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: jmeter
+  template:
+    metadata:
+      labels:
+        app: jmeter
+    spec:
+      containers:
+        - name: jmeter
+          image: justb4/jmeter:5.7.2
+          args:
+            - -n
+            - -t
+            - /tests/wedding_test.jmx
+            - -l
+            - /tests/results.jtl
+          volumeMounts:
+            - name: jmeter-test
+              mountPath: /tests
+      restartPolicy: Never
+      volumes:
+        - name: jmeter-test
+          configMap:
+            name: jmeter-test
