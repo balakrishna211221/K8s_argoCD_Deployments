@@ -27,7 +27,7 @@ spec:
           volumeMounts:
             - name: jmeter-test
               mountPath: /tests
-      restartPolicy: Never
+      restartPolicy: Always
       volumes:
         - name: jmeter-test
           configMap:
