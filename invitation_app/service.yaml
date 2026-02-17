@@ -12,4 +12,5 @@ spec:
   ports:
     - name: invitcation
       targetPort: 3000
+      nodePort: 32762 # valid range: 30000-32767
   sessionAffinity: None
