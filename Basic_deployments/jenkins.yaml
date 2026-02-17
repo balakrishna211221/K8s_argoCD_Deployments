@@ -4,7 +4,7 @@ metadata:
   name: jenkins-deployment
   labels:
     app: jenkins
-  namespace: argocd
+  namespace: dev
 spec:
   replicas: 1
   selector:
@@ -21,4 +21,5 @@ spec:
         ports:
         - containerPort: 8080
   
+
 
