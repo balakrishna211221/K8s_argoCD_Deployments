@@ -1,0 +1,24 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: invitcation
+  name: invitcation
+  namespace: default
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: invitcation
+  strategy: {}
+  template:
+    metadata:
+      labels:
+        app: invitcation
+    spec:
+      containers:
+      - image: balubharath.a1/wedding-app
+        name: wedding-app
+        ports:
+        - containerPort: 3000
