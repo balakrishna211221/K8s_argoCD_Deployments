@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: jmeter
-          image: justb4/jmeter:5.7.2
+          image: alpine/jmeter
           args:
             - -n
             - -t
