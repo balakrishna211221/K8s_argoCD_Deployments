@@ -18,7 +18,7 @@ spec:
         app: invitcation
     spec:
       containers:
-      - image: balubharath.a1/wedding-app
+      - image: baluaddagatla/container_app_sample
         name: wedding-app
         ports:
         - containerPort: 3000
